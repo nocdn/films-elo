@@ -10,9 +10,69 @@ body {
 }
 
 .comparison-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 1rem;
+  display: flex;
+  height: 100dvh;
+  width: 100vw;
+
+  align-items: center;
+
+  // place-content: center;
+}
+
+.left-choice,
+.right-choice {
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: center;
+  // align-items: center;
   padding: 1rem;
-  height: 100%;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  width: 50%;
+  height: 50%;
+  margin: 2rem;
+
+  display: grid;
+  place-items: center;
+
+  font-family: "SF Mono", monospace;
+}
+
+.left-choice:hover,
+.right-choice:hover {
+  background-color: #f4f4f4;
+}
+
+.scores-button {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  background-color: #f4f4f4;
+  padding: 0.75rem;
+  border-radius: 8px;
+}
+
+table {
+  border-spacing: 4rem 1rem;
+}
+
+td {
+  font-family: "SF Mono", monospace;
+  margin-right: 2rem;
+}
+
+th {
+  font-family: "SF Mono", monospace;
+}
+
+dialog {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  width: 80%;
+  height: 85%;
+  position: fixed; // Step 1: Position relative to the viewport
+  top: 50%; // Step 2: Move to the middle vertically
+  left: 50%; // Step 2: Move to the middle horizontally
+  transform: translate(-50%, -50%); // Step 3: Center the dialog
 }

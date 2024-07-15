@@ -10,14 +10,14 @@ const listOfFilms = [
   "Hidden figures",
   "The gentlemen",
   "When harry met sally",
-  "The Bourne identity (and all later films)",
+  "The Bourne films",
   "Intouchables",
   "Knives out",
-  "Taken 1, Taken 2",
+  "Taken films",
   "Shutter island",
   "Shawshank redemption ",
   "Flight plan",
-  "Endgame",
+  "Avengers Endgame",
   "Dancing with wolves",
   "Pinondze to nie wszystko",
   "Jak rozpętałem drugą wojnę światową",
@@ -25,9 +25,13 @@ const listOfFilms = [
   "Rye Lane",
   "10 Things I hate about you",
   "Pretty woman",
-  "Grab Turismo",
+  "Gran Turismo",
   "Creed films",
   "Bullet train",
+  "Inside man",
+  "Tetris",
+  "Prisoners",
+  "Fly me to the moon",
 ];
 
 let comparisonPairs = [];
@@ -39,6 +43,9 @@ function makeComparisonPairs() {
       comparisonPairs.push(newPair);
     }
   }
+
+  // shuffle the list
+  comparisonPairs = comparisonPairs.sort(() => 0.5 - Math.random());
   console.log(comparisonPairs);
 }
 
@@ -56,14 +63,79 @@ function createScores(filmList) {
 scores = createScores(listOfFilms);
 console.log(scores);
 
-function displayComparison() {
+currentPairCount = 0;
+
+function displayNextComparison() {
   const leftSpace = document.querySelector(".left-choice");
   const rightSpace = document.querySelector(".right-choice");
 
-  for (i = 0; comparisonPairs.length; i++) {
-    leftSpace.textContent = comparisonPairs[i][0];
-    rightSpace.textContent = comparisonPairs[i][1];
+  if (currentPairCount < comparisonPairs.length) {
+    leftSpace.textContent = comparisonPairs[currentPairCount][0];
+    rightSpace.textContent = comparisonPairs[currentPairCount][1];
+    currentPairCount++;
   }
 }
 
-displayComparison();
+displayNextComparison();
+
+const leftSpace = document.querySelector(".left-choice");
+const rightSpace = document.querySelector(".right-choice");
+
+leftSpace.addEventListener("click", function () {
+  const winningSpace = leftSpace.textContent;
+
+  for (let i = 0; i < scores.length; i++) {
+    if (scores[i][0] === winningSpace) {
+      scores[i][1]++;
+    }
+  }
+
+  displayNextComparison();
+  console.log(scores);
+});
+
+rightSpace.addEventListener("click", function () {
+  const winningSpace = rightSpace.textContent;
+
+  for (let i = 0; i < scores.length; i++) {
+    if (scores[i][0] === winningSpace) {
+      scores[i][1]++;
+    }
+  }
+
+  displayNextComparison();
+  console.log(scores);
+});
+
+const scoresButton = document.querySelector(".scores-button");
+const scoresModal = document.querySelector(".scores-modal");
+scoresButton.addEventListener("click", function () {
+  scoresModal.showModal();
+
+  // Sort the scores array by score (descending order)
+  const sortedScores = [...scores].sort((a, b) => b[1] - a[1]);
+
+  const scoresTable = document.createElement("table");
+  const headerRow = document.createElement("tr");
+  headerRow.innerHTML = "<th>Film</th><th>Score</th>";
+  scoresTable.appendChild(headerRow);
+
+  for (let i = 0; i < sortedScores.length; i++) {
+    const row = document.createElement("tr");
+    row.innerHTML =
+      "<td>" + sortedScores[i][0] + "</td><td>" + sortedScores[i][1] + "</td>";
+    scoresTable.appendChild(row);
+  }
+
+  // Clear previous table if exists
+  const form = scoresModal.querySelector("form");
+  form.innerHTML = "";
+  form.appendChild(scoresTable);
+});
+
+// Close the modal when the user clicks outside of it
+scoresModal.addEventListener("click", function (event) {
+  if (event.target === scoresModal) {
+    scoresModal.close();
+  }
+});

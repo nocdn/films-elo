@@ -5,12 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Films Elo</title>
     <link rel="stylesheet" href="styles.css" />
+    <script
+      src="https://kit.fontawesome.com/7d2900409e.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <div class="comparison-grid">
-      <p class="left-choice"></p>
-      <p class="right-choice"></p>
+      <div class="left-choice"></div>
+      <div class="right-choice"></div>
     </div>
+    <div class="scores-button">
+      <i class="fa-solid fa-chart-simple"></i>
+    </div>
+
+    <dialog closed class="scores-modal">
+      <form method="dialog">
+        <button
+          style="
+            user-select: none;
+            outline: none;
+            border: none;
+            -webkit-tap-highlight-color: transparent;
+          "
+        >
+          OK
+        </button>
+      </form>
+    </dialog>
+
     <script src="index.js"></script>
   </body>
 </html>
