@@ -46,7 +46,7 @@ function makeComparisonPairs() {
 
   // shuffle the list
   comparisonPairs = comparisonPairs.sort(() => 0.5 - Math.random());
-  console.log(comparisonPairs);
+  // console.log(comparisonPairs);
 }
 
 makeComparisonPairs();
