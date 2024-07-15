@@ -11,7 +11,7 @@ body {
 
 .comparison-grid {
   display: flex;
-  height: 100dvh;
+  height: 90dvh;
   width: 100vw;
   align-items: center;
 }
@@ -27,6 +27,7 @@ body {
   display: grid;
   place-items: center;
   font-family: "SF Mono", monospace;
+  cursor: pointer;
 }
 
 .left-choice:hover,
@@ -41,6 +42,7 @@ body {
   background-color: #f4f4f4;
   padding: 0.75rem;
   border-radius: 8px;
+  cursor: pointer;
 }
 
 table {
@@ -66,4 +68,11 @@ dialog {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.progress-container {
+  width: 100vw;
+  display: grid;
+  place-items: center;
+  font-family: "SF Mono", monospace;
 }/*# sourceMappingURL=styles.css.map */

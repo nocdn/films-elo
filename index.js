@@ -2,36 +2,36 @@ const listOfFilms = [
   "In the heights",
   "Black panther",
   "Snowden",
-  "Kingsman: The secret agent",
-  "Negotiator",
-  "Enemy of the state",
-  "Martian",
-  "Entergalactic",
-  "Hidden figures",
-  "The gentlemen",
-  "When harry met sally",
-  "The Bourne films",
-  "Intouchables",
-  "Knives out",
-  "Taken films",
-  "Shutter island",
-  "Shawshank redemption ",
-  "Flight plan",
-  "Avengers Endgame",
-  "Dancing with wolves",
-  "Pinondze to nie wszystko",
-  "Jak rozpętałem drugą wojnę światową",
-  "Anne of green gables",
-  "Rye Lane",
-  "10 Things I hate about you",
-  "Pretty woman",
-  "Gran Turismo",
-  "Creed films",
-  "Bullet train",
-  "Inside man",
-  "Tetris",
-  "Prisoners",
-  "Fly me to the moon",
+  // "Kingsman: The secret agent",
+  // "Negotiator",
+  // "Enemy of the state",
+  // "Martian",
+  // "Entergalactic",
+  // "Hidden figures",
+  // "The gentlemen",
+  // "When harry met sally",
+  // "The Bourne films",
+  // "Intouchables",
+  // "Knives out",
+  // "Taken films",
+  // "Shutter island",
+  // "Shawshank redemption ",
+  // "Flight plan",
+  // "Avengers Endgame",
+  // "Dancing with wolves",
+  // "Pinondze to nie wszystko",
+  // "Jak rozpętałem drugą wojnę światową",
+  // "Anne of green gables",
+  // "Rye Lane",
+  // "10 Things I hate about you",
+  // "Pretty woman",
+  // "Gran Turismo",
+  // "Creed films",
+  // "Bullet train",
+  // "Inside man",
+  // "Tetris",
+  // "Prisoners",
+  // "Fly me to the moon",
 ];
 
 let comparisonPairs = [];
@@ -65,7 +65,16 @@ console.log(scores);
 
 currentPairCount = 0;
 
+const progressCount = document.querySelector(".progress");
+
+function updateProgress(currentCount) {
+  progressCount.textContent = currentCount + 1 + `/${comparisonPairs.length}`;
+}
+
+updateProgress(currentPairCount);
+
 function displayNextComparison() {
+  updateProgress(currentPairCount);
   const leftSpace = document.querySelector(".left-choice");
   const rightSpace = document.querySelector(".right-choice");
 
