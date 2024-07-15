@@ -2,36 +2,36 @@ const listOfFilms = [
   "In the heights",
   "Black panther",
   "Snowden",
-  // "Kingsman: The secret agent",
-  // "Negotiator",
-  // "Enemy of the state",
-  // "Martian",
-  // "Entergalactic",
-  // "Hidden figures",
-  // "The gentlemen",
-  // "When harry met sally",
-  // "The Bourne films",
-  // "Intouchables",
-  // "Knives out",
-  // "Taken films",
-  // "Shutter island",
-  // "Shawshank redemption ",
-  // "Flight plan",
-  // "Avengers Endgame",
-  // "Dancing with wolves",
-  // "Pinondze to nie wszystko",
-  // "Jak rozpętałem drugą wojnę światową",
-  // "Anne of green gables",
-  // "Rye Lane",
-  // "10 Things I hate about you",
-  // "Pretty woman",
-  // "Gran Turismo",
-  // "Creed films",
-  // "Bullet train",
-  // "Inside man",
-  // "Tetris",
-  // "Prisoners",
-  // "Fly me to the moon",
+  "Kingsman: The secret agent",
+  "Negotiator",
+  "Enemy of the state",
+  "Martian",
+  "Entergalactic",
+  "Hidden figures",
+  "The gentlemen",
+  "When harry met sally",
+  "The Bourne films",
+  "Intouchables",
+  "Knives out",
+  "Taken films",
+  "Shutter island",
+  "Shawshank redemption ",
+  "Flight plan",
+  "Avengers Endgame",
+  "Dancing with wolves",
+  "Pinondze to nie wszystko",
+  "Jak rozpętałem drugą wojnę światową",
+  "Anne of green gables",
+  "Rye Lane",
+  "10 Things I hate about you",
+  "Pretty woman",
+  "Gran Turismo",
+  "Creed films",
+  "Bullet train",
+  "Inside man",
+  "Tetris",
+  "Prisoners",
+  "Fly me to the moon",
 ];
 
 let comparisonPairs = [];
@@ -68,20 +68,32 @@ currentPairCount = 0;
 const progressCount = document.querySelector(".progress");
 
 function updateProgress(currentCount) {
-  progressCount.textContent = currentCount + 1 + `/${comparisonPairs.length}`;
+  if (currentCount >= comparisonPairs.length) {
+    progressCount.textContent = "Complete";
+  } else {
+    progressCount.textContent = currentCount + 1 + `/${comparisonPairs.length}`;
+  }
 }
 
 updateProgress(currentPairCount);
 
 function displayNextComparison() {
-  updateProgress(currentPairCount);
   const leftSpace = document.querySelector(".left-choice");
   const rightSpace = document.querySelector(".right-choice");
+  console.log(currentPairCount);
+  updateProgress(currentPairCount);
 
   if (currentPairCount < comparisonPairs.length) {
     leftSpace.textContent = comparisonPairs[currentPairCount][0];
     rightSpace.textContent = comparisonPairs[currentPairCount][1];
     currentPairCount++;
+  } else {
+    leftSpace.textContent = "Comparison Complete";
+    leftSpace.style.backgroundColor = "#E2FBE8";
+    leftSpace.style.color = "#424843";
+    rightSpace.textContent = "Comparison Complete";
+    rightSpace.style.backgroundColor = "#E2FBE8";
+    rightSpace.style.color = "#424843";
   }
 }
 
@@ -121,7 +133,7 @@ const scoresModal = document.querySelector(".scores-modal");
 scoresButton.addEventListener("click", function () {
   scoresModal.showModal();
 
-  // Sort the scores array by score (descending order)
+  // sort scores array by score, descending
   const sortedScores = [...scores].sort((a, b) => b[1] - a[1]);
 
   const scoresTable = document.createElement("table");
@@ -136,13 +148,13 @@ scoresButton.addEventListener("click", function () {
     scoresTable.appendChild(row);
   }
 
-  // Clear previous table if exists
+  // clear previous table if exists
   const form = scoresModal.querySelector("form");
   form.innerHTML = "";
   form.appendChild(scoresTable);
 });
 
-// Close the modal when the user clicks outside of it
+// close modal when user clicks outside of it
 scoresModal.addEventListener("click", function (event) {
   if (event.target === scoresModal) {
     scoresModal.close();
