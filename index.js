@@ -61,7 +61,7 @@ function createScores(filmList) {
 }
 
 scores = createScores(listOfFilms);
-console.log(scores);
+// console.log(scores);
 
 currentPairCount = 0;
 
@@ -80,7 +80,7 @@ updateProgress(currentPairCount);
 function displayNextComparison() {
   const leftSpace = document.querySelector(".left-choice");
   const rightSpace = document.querySelector(".right-choice");
-  console.log(currentPairCount);
+  // console.log(currentPairCount);
   updateProgress(currentPairCount);
 
   if (currentPairCount < comparisonPairs.length) {
@@ -112,7 +112,7 @@ leftSpace.addEventListener("click", function () {
   }
 
   displayNextComparison();
-  console.log(scores);
+  // console.log(scores);
 });
 
 rightSpace.addEventListener("click", function () {
@@ -125,7 +125,7 @@ rightSpace.addEventListener("click", function () {
   }
 
   displayNextComparison();
-  console.log(scores);
+  // console.log(scores);
 });
 
 const scoresButton = document.querySelector(".scores-button");
