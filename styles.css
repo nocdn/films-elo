@@ -14,25 +14,42 @@ body {
   height: 90dvh;
   width: 100vw;
   align-items: center;
+  padding: 0 4rem;
 }
 
 .left-choice,
 .right-choice {
   padding: 1rem;
-  border: 1px dashed #ccc;
-  border-radius: 8px;
   width: 50%;
   height: 50%;
   margin: 2rem;
   display: grid;
   place-items: center;
   font-family: "SF Mono", monospace;
+  transition: all 0.05s ease-in-out;
   cursor: pointer;
 }
 
-.left-choice:hover,
-.right-choice:hover {
-  background-color: #f4f4f4;
+.left-choice {
+  background-color: #d9e8fd;
+  color: #181c44;
+  box-shadow: 0.75rem 0.75rem 0 0 #f4f4f4;
+  margin-right: 4rem;
+}
+
+.left-choice:active {
+  box-shadow: 0.25rem 0.25rem 0 0 #f4f4f4;
+}
+
+.right-choice {
+  background-color: #f1e8fd;
+  color: #441770;
+  box-shadow: 0.75rem 0.75rem 0 0 #f4f4f4;
+  margin-left: 4rem;
+}
+
+.right-choice:active {
+  box-shadow: 0.25rem 0.25rem 0 0 #f4f4f4;
 }
 
 .scores-button {
