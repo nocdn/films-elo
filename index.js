@@ -160,3 +160,13 @@ scoresModal.addEventListener("click", function (event) {
     scoresModal.close();
   }
 });
+
+const introModal = document.querySelector(".intro-modal");
+
+function closeIntroModal() {
+  introModal.close();
+}
+
+document.querySelector(".btn-5").addEventListener("click", function () {
+  closeIntroModal();
+});
