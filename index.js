@@ -1,45 +1,11 @@
-const listOfFilms = [
-  "In the heights",
-  "Black panther",
-  "Snowden",
-  "Kingsman: The secret agent",
-  "Negotiator",
-  "Enemy of the state",
-  "Martian",
-  "Entergalactic",
-  "Hidden figures",
-  "The gentlemen",
-  "When harry met sally",
-  "The Bourne films",
-  "Intouchables",
-  "Knives out",
-  "Taken films",
-  "Shutter island",
-  "Shawshank redemption ",
-  "Flight plan",
-  "Avengers Endgame",
-  "Dancing with wolves",
-  "Pinondze to nie wszystko",
-  "Jak rozpętałem drugą wojnę światową",
-  "Anne of green gables",
-  "Rye Lane",
-  "10 Things I hate about you",
-  "Pretty woman",
-  "Gran Turismo",
-  "Creed films",
-  "Bullet train",
-  "Inside man",
-  "Tetris",
-  "Prisoners",
-  "Fly me to the moon",
-];
+const listOfItems = [];
 
 let comparisonPairs = [];
 
 function makeComparisonPairs() {
-  for (let i = 0; i < listOfFilms.length; i++) {
-    for (let j = i + 1; j < listOfFilms.length; j++) {
-      let newPair = [listOfFilms[i], listOfFilms[j]];
+  for (let i = 0; i < listOfItems.length; i++) {
+    for (let j = i + 1; j < listOfItems.length; j++) {
+      let newPair = [listOfItems[i], listOfItems[j]];
       comparisonPairs.push(newPair);
     }
   }
@@ -60,7 +26,7 @@ function createScores(filmList) {
   return scores;
 }
 
-scores = createScores(listOfFilms);
+scores = createScores(listOfItems);
 // console.log(scores);
 
 currentPairCount = 0;
@@ -159,14 +125,4 @@ scoresModal.addEventListener("click", function (event) {
   if (event.target === scoresModal) {
     scoresModal.close();
   }
-});
-
-const introModal = document.querySelector(".intro-modal");
-
-function closeIntroModal() {
-  introModal.close();
-}
-
-document.querySelector(".btn-5").addEventListener("click", function () {
-  closeIntroModal();
 });
