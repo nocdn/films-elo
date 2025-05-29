@@ -173,7 +173,6 @@
     class="flex flex-col sm:flex-row gap-4 sm:gap-12 md:gap-24 items-stretch h-auto sm:h-72 md:h-96 w-full max-w-4xl"
   >
     {#if !complete && comparisonPairs.length > 0}
-      <!-- Comparison View -->
       <button
         onmousedown={selectFirstOption}
         class="w-full h-48 sm:h-full grid place-content-center rounded-xl text-center p-4 {firstButtonShrunk
@@ -202,7 +201,6 @@
         >
       </div>
     {:else if complete}
-      <!-- Completion View -->
       <div
         class="flex flex-col gap-2.5 justify-center items-center w-full h-full min-h-48 sm:min-h-full rounded-xl p-4"
       >
@@ -224,7 +222,6 @@
     {/if}
   </picks>
   {#if !complete && comparisonPairs.length > 0 && listOfItems.length > 0}
-    <!-- Progress indicator -->
     {@const totalPairs = (listOfItems.length * (listOfItems.length - 1)) / 2}
     {@const completedPairs = totalPairs - comparisonPairs.length}
     <p class="text-center text-lg h-fit">
