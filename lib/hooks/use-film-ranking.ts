@@ -1,12 +1,10 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import { enrichFilms } from "@/app/actions"
 import { calculateNewRatings, getCompletionPercentage, selectNextPair } from "../elo"
 import { clearState, initializeFilms, loadState, saveState } from "../storage"
-import { enrichFilmsWithPosters } from "../tmdb"
 import { Film, FilmRankingState } from "../types"
-
-const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY || ""
 
 export function useFilmRanking() {
   const [state, setState] = useState<FilmRankingState | null>(null)
@@ -45,20 +43,26 @@ export function useFilmRanking() {
     setIsLoading(true)
     const newState = initializeFilms(filmNames)
 
-    if (TMDB_API_KEY) {
-      try {
-        const posterData = await enrichFilmsWithPosters(newState.films, TMDB_API_KEY)
-        newState.films = newState.films.map((film) => {
-          const data = posterData.get(film.name)
-          if (data) {
-            return { ...film, posterUrl: data.posterUrl, year: data.year }
-          }
-          return film
-        })
-        saveState(newState)
-      } catch (e) {
-        console.error("Failed to fetch posters:", e)
+    try {
+      const posterData = await enrichFilms(filmNames)
+      newState.films = newState.films.map((film) => {
+        const data = posterData[film.name]
+        if (data) {
+          return { ...film, posterUrl: data.posterUrl, year: data.year }
+        }
+        return film
+      })
+      saveState(newState)
+
+      const firstPair = selectNextPair(newState.films)
+      for (const film of firstPair ?? []) {
+        if (film.posterUrl) {
+          const img = new Image()
+          img.src = film.posterUrl
+        }
       }
+    } catch (e) {
+      console.error("Failed to fetch posters:", e)
     }
 
     setState(newState)

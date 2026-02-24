@@ -18,7 +18,7 @@ function ComparisonOption({ film, onPick }: ComparisonOptionProps) {
       onMouseDown={onPick}
       className="flex h-[496px] w-[267px] cursor-pointer flex-col items-center focus:outline-none"
     >
-      <div className="h-[400px] w-[267px] overflow-hidden rounded-xl">
+      <div className="border-shadow h-[400px] w-[267px] overflow-hidden rounded-xl">
         {film.posterUrl ? (
           <img
             src={film.posterUrl}
@@ -63,6 +63,20 @@ export default function Comparisons() {
       router.push("/")
     }
   }, [isLoading, state, router])
+
+  useEffect(() => {
+    if (!state || !currentPair) return
+    const sorted = [...state.films].sort((a, b) => a.comparisons - b.comparisons)
+    const minComparisons = sorted[0].comparisons
+    const candidates = sorted.filter((f) => f.comparisons <= minComparisons + 2)
+    const toPrefetch = candidates.slice(0, 10)
+    for (const film of toPrefetch) {
+      if (film.posterUrl) {
+        const img = new Image()
+        img.src = film.posterUrl
+      }
+    }
+  }, [state, currentPair])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
