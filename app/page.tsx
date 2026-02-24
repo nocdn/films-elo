@@ -182,7 +182,7 @@ export default function Home() {
           <button
             type="button"
             ref={importButtonRef}
-            onMouseDown={handleImportToggle}
+            onClick={handleImportToggle}
             disabled={isStarting || isImporting}
             className="border-shadow text-secondary-foreground ml-auto flex cursor-pointer items-center justify-center gap-2.5 rounded-4xl bg-[#FEFEFE] py-2 pr-4 pl-4 disabled:cursor-not-allowed disabled:opacity-50"
           >

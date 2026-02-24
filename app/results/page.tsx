@@ -45,7 +45,7 @@ export default function Results() {
           openOnHover
           delay={0}
           closeDelay={0}
-          onMouseDown={handleExport}
+          onClick={handleExport}
           className="absolute top-4 right-5.5 flex cursor-pointer items-center gap-2"
         >
           {copied ? "Copied" : "Export"}
