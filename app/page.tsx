@@ -1,7 +1,7 @@
 "use client"
 
 import { Popover } from "@base-ui-components/react/popover"
-import { ArrowRight, Download, Loader, Table2, X } from "lucide-react"
+import { ArrowRight, Download, Loader, Table2, Upload, X } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
@@ -30,6 +30,12 @@ export default function Home() {
   const [importSummary, setImportSummary] = useState<string | null>(null)
   const importFileInputRef = useRef<HTMLInputElement>(null)
   const importButtonRef = useRef<HTMLButtonElement>(null)
+  const [showLetterboxdInstructions, setShowLetterboxdInstructions] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))
+  }, [])
 
   useEffect(() => {
     if (state && state.films.length > 0 && !isLoading) {
@@ -54,6 +60,7 @@ export default function Home() {
     setFilmInput("")
     setImportError(null)
     setImportSummary(null)
+    setShowLetterboxdInstructions(false)
     reset()
   }
 
@@ -61,7 +68,7 @@ export default function Home() {
     setImportError(null)
     setImportSummary(null)
     setIsImportOpen(false)
-    importFileInputRef.current?.click()
+    setShowLetterboxdInstructions(true)
   }
 
   const handleImportToggle = (event: ReactMouseEvent<HTMLButtonElement>) => {
@@ -109,6 +116,7 @@ export default function Home() {
       reset()
       setFilmInput(data.titles.join("\n"))
       setImportSummary(`Imported ${data.titles.length} films from Letterboxd.`)
+      setShowLetterboxdInstructions(false)
     } catch (error) {
       const message = error instanceof Error ? error.message : "Could not import that file."
       setImportError(message)
@@ -123,13 +131,81 @@ export default function Home() {
 
   return (
     <div className="mt-40 flex flex-col gap-4">
-      <textarea
-        className="border-shadow min-h-96 w-2xl rounded-4xl p-4 [corner-shape:squircle] focus:outline-none"
-        placeholder="Enter films to compare (one per line)"
-        value={filmInput}
-        onChange={(e) => setFilmInput(e.target.value)}
-        disabled={isStarting || isImporting}
-      />
+      {showLetterboxdInstructions ? (
+        <div className="border-shadow flex min-h-96 w-2xl flex-col rounded-4xl p-5 [corner-shape:squircle]">
+          <div className="flex items-start justify-between">
+            <h2 className="font-inter flex items-center gap-2 text-lg font-medium">
+              <LetterboxdLogo
+                className="size-6 shrink-0 rounded-full ring ring-gray-200/50"
+                aria-hidden="true"
+              />
+              Instructions <span className="text-gray-500/70">({isMobile ? "mobile" : "web"})</span>
+            </h2>
+            <button
+              type="button"
+              onClick={() => setShowLetterboxdInstructions(false)}
+              className="border-shadow text-secondary-foreground flex cursor-pointer items-center justify-center rounded-4xl bg-[#FEFEFE] px-3 py-1.5 text-sm transition-all duration-50 active:scale-97"
+            >
+              Close
+            </button>
+          </div>
+
+          {isMobile ? (
+            <div className="mt-4">
+              <h3 className="text-sm font-medium">On iOS/Android:</h3>
+              <ol className="mt-2 list-inside list-decimal space-y-1 text-sm text-gray-700">
+                <li>Open the App</li>
+                <li>Go to your profile tab</li>
+                <li>Press the settings cog (top left)</li>
+                <li>Scroll down to "Advanced Settings"</li>
+                <li>Scroll down to "Account Data"</li>
+                <li>Press "Export Your Data"</li>
+              </ol>
+            </div>
+          ) : (
+            <div className="mt-4">
+              <h3 className="text-sm font-medium">On Web:</h3>
+              <ol className="mt-2 list-inside list-decimal space-y-1 text-sm text-gray-700">
+                <li>Hover on your profile</li>
+                <li>Open "Settings" from the menu</li>
+                <li>Go to the "Data" tab</li>
+                <li>Press "Export Your Data"</li>
+              </ol>
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={() => importFileInputRef.current?.click()}
+            disabled={isImporting}
+            className="border-shadow text-secondary-foreground mt-auto flex cursor-pointer items-center justify-center gap-2.5 self-start rounded-4xl bg-[#FEFEFE] py-2 pr-4 pl-4 text-sm transition-all duration-50 not-disabled:active:scale-97 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isImporting ? (
+              <>
+                Importing <Loader size={13} className="animate-spin" />
+              </>
+            ) : (
+              <>
+                Upload .zip file <Upload size={13} />
+              </>
+            )}
+          </button>
+        </div>
+      ) : (
+        <textarea
+          className="border-shadow min-h-96 w-2xl rounded-4xl p-4 [corner-shape:squircle] focus:outline-none"
+          placeholder={`Enter films to compare (one per line), for example:
+          
+The Godfather
+Rye Lane
+Snowden
+
+Or import a Letterboxd export file.`}
+          value={filmInput}
+          onChange={(e) => setFilmInput(e.target.value)}
+          disabled={isStarting || isImporting}
+        />
+      )}
       <div className="flex gap-2">
         {hasExistingSession ? (
           <Link
