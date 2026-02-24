@@ -1,36 +1,48 @@
 {
-  "name": "films-elo",
+  "name": "newerfilms",
+  "version": "0.0.1",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
-  },
-  "devDependencies": {
-    "@lucide/svelte": "^0.483.0",
-    "@sveltejs/vite-plugin-svelte": "^5.0.3",
-    "@tailwindcss/container-queries": "^0.1.1",
-    "@tailwindcss/forms": "^0.5.10",
-    "@tailwindcss/typography": "^0.5.16",
-    "@tsconfig/svelte": "^5.0.4",
-    "autoprefixer": "^10.4.21",
-    "bits-ui": "^1.8.0",
-    "clsx": "^2.1.1",
-    "svelte": "^5.33.10",
-    "svelte-check": "^4.2.1",
-    "tailwind-merge": "^3.3.0",
-    "tailwind-variants": "^1.0.0",
-    "tailwindcss": "^3.4.17",
-    "tailwindcss-animate": "^1.0.7",
-    "typescript": "~5.7.3",
-    "vaul-svelte": "^1.0.0-next.7",
-    "vite": "^6.3.5"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "prettier --check .",
+    "format": "prettier --write ."
   },
   "dependencies": {
-    "lucide-svelte": "^0.483.0",
-    "motion": "^12.15.0"
-  }
+    "@base-ui-components/react": "^1.0.0-rc.0",
+    "class-variance-authority": "latest",
+    "clsx": "latest",
+    "csv-parse": "^6.1.0",
+    "jszip": "^3.10.1",
+    "lucide-react": "latest",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "shiki": "latest",
+    "tailwind-merge": "latest"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "babel-plugin-react-compiler": "latest",
+    "concurrently": "latest",
+    "prettier": "latest",
+    "prettier-plugin-organize-imports": "latest",
+    "prettier-plugin-tailwindcss": "latest",
+    "tailwindcss": "latest",
+    "tailwindcss-motion": "latest",
+    "tw-animate-css": "latest",
+    "typescript": "latest"
+  },
+  "ignoreScripts": [
+    "sharp",
+    "unrs-resolver"
+  ],
+  "trustedDependencies": [
+    "sharp",
+    "unrs-resolver"
+  ]
 }
