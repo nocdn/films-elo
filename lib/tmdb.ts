@@ -1,5 +1,3 @@
-import { cacheLife, cacheTag } from "next/cache"
-
 const TMDB_API_BASE = "https://api.themoviedb.org/3"
 const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w342"
 
@@ -17,10 +15,6 @@ interface TMDBSearchResponse {
 export async function searchFilm(
   query: string
 ): Promise<{ posterUrl?: string; year?: number } | null> {
-  "use cache"
-  cacheLife("max")
-  cacheTag("tmdb")
-
   const apiKey = process.env.TMDB_API_KEY
   if (!apiKey) return null
 

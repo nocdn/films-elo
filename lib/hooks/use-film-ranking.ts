@@ -53,14 +53,6 @@ export function useFilmRanking() {
         return film
       })
       saveState(newState)
-
-      const firstPair = selectNextPair(newState.films)
-      for (const film of firstPair ?? []) {
-        if (film.posterUrl) {
-          const img = new Image()
-          img.src = film.posterUrl
-        }
-      }
     } catch (e) {
       console.error("Failed to fetch posters:", e)
     }
