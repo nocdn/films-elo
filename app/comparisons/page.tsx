@@ -16,9 +16,9 @@ function ComparisonOption({ film, onPick }: ComparisonOptionProps) {
   return (
     <button
       onMouseDown={onPick}
-      className="flex h-[496px] w-[267px] cursor-pointer flex-col items-center focus:outline-none"
+      className="flex w-[clamp(6.5rem,19svh,10.5rem)] cursor-pointer flex-col items-center focus:outline-none md:h-[496px] md:w-[267px]"
     >
-      <div className="border-shadow h-[400px] w-[267px] overflow-hidden rounded-xl">
+      <div className="border-shadow aspect-[2/3] w-full overflow-hidden rounded-xl">
         {film.posterUrl ? (
           <img
             src={film.posterUrl}
@@ -27,12 +27,12 @@ function ComparisonOption({ film, onPick }: ComparisonOptionProps) {
           />
         ) : (
           <div className="border-shadow flex h-full w-full items-center justify-center rounded-xl bg-gray-100 [corner-shape:squircle]">
-            <FilmIcon className="h-16 w-16 text-gray-300" />
+            <FilmIcon className="h-10 w-10 text-gray-300 md:h-16 md:w-16" />
           </div>
         )}
       </div>
-      <div className="mt-4 h-[80px] w-[267px] overflow-hidden px-1">
-        <p className="w-full text-center text-base leading-tight break-words whitespace-normal text-gray-700">
+      <div className="mt-1.5 h-[clamp(2rem,5svh,2.8rem)] w-full overflow-hidden px-1 md:mt-4 md:h-[80px]">
+        <p className="w-full text-center text-[14px] leading-tight break-words whitespace-normal text-gray-700 md:text-base">
           {film.name}
           {film.year && <span className="ml-1 text-gray-400">({film.year})</span>}
         </p>
@@ -81,7 +81,7 @@ export default function Comparisons() {
 
   if (isLoading || !currentPair) {
     return (
-      <div className="flex h-full items-center justify-center">
+      <div className="flex h-svh w-full items-center justify-center">
         <div className="text-gray-400">Loading...</div>
       </div>
     )
@@ -90,29 +90,35 @@ export default function Comparisons() {
   const [filmA, filmB] = currentPair
 
   return (
-    <>
-      <Link href="/" prefetch={true} className="absolute top-4 left-4 flex items-center gap-2">
-        <ArrowLeft className="h-4 w-4" /> Back
-      </Link>
-      <div className="absolute top-4 right-4 flex flex-col items-end gap-1">
-        <div className="text-sm text-gray-500">{totalMatches} comparisons</div>
-        <div className="h-1.5 w-32 overflow-hidden rounded-full bg-gray-200">
-          <div
-            className="h-full rounded-full bg-gray-800 transition-all duration-300"
-            style={{ width: `${completionPercentage}%` }}
-          />
+    <div className="flex h-svh w-full flex-col overflow-hidden md:h-auto md:overflow-visible">
+      <div className="mt-4 flex w-full shrink-0 items-start justify-between px-4 md:mt-0 md:px-0">
+        <Link
+          href="/"
+          prefetch={true}
+          className="flex items-center gap-2 md:absolute md:top-4 md:left-4"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back
+        </Link>
+        <div className="flex flex-col items-end gap-1 md:absolute md:top-4 md:right-4">
+          <div className="text-sm text-gray-500">{totalMatches} comparisons</div>
+          <div className="h-1.5 w-32 overflow-hidden rounded-full bg-gray-200">
+            <div
+              className="h-full rounded-full bg-gray-800 transition-all duration-300"
+              style={{ width: `${completionPercentage}%` }}
+            />
+          </div>
+          <div className="text-xs text-gray-400">{completionPercentage}% to minimum</div>
         </div>
-        <div className="text-xs text-gray-400">{completionPercentage}% to minimum</div>
       </div>
-      <div className="mt-40 flex flex-col items-center justify-center gap-20">
-        <div className="flex items-center gap-12">
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-between px-4 pt-2 pb-4 md:mt-40 md:min-h-fit md:flex-none md:justify-center md:gap-20 md:px-0 md:pt-0 md:pb-0">
+        <div className="flex min-h-0 w-full flex-1 flex-col items-center justify-center gap-3 md:w-auto md:flex-none md:flex-row md:items-center md:justify-center md:gap-12">
           <ComparisonOption film={filmA} onPick={() => handleChoice(filmA.id, filmB.id)} />
-          <p className="text-gray-400/50">vs</p>
+          <p className="hidden text-sm text-gray-400/50 md:block md:text-base">vs</p>
           <ComparisonOption film={filmB} onPick={() => handleChoice(filmB.id, filmA.id)} />
         </div>
         <Link
           href="/results"
-          className={`border-shadow text-secondary-foreground flex items-center justify-center gap-2 rounded-4xl bg-[#FEFEFE] py-2 pr-3.5 pl-4 duration-50 ${
+          className={`border-shadow text-secondary-foreground mt-3 flex shrink-0 items-center justify-center gap-2 rounded-4xl bg-[#FEFEFE] py-2 pr-3.5 pl-4 duration-50 md:mt-0 ${
             completionPercentage >= 100
               ? "cursor-pointer transition-all active:scale-97"
               : "cursor-not-allowed opacity-50"
@@ -122,6 +128,6 @@ export default function Comparisons() {
           Results <Table2 size={16} />
         </Link>
       </div>
-    </>
+    </div>
   )
 }
