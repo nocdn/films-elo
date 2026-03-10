@@ -187,6 +187,12 @@ export function useFilmRanking() {
     []
   )
 
+  const skipPair = useCallback(() => {
+    if (!state || state.films.length < 2) return
+    const pair = selectNextPair(state.films)
+    setCurrentPair(pair)
+  }, [state])
+
   const reset = useCallback(() => {
     clearState()
     setState(null)
@@ -213,6 +219,7 @@ export function useFilmRanking() {
     startNewRanking,
     recordMatch,
     undoLastMatch,
+    skipPair,
     importFromCsv,
     reset,
   }

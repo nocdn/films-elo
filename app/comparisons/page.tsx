@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeft, Film as FilmIcon, Table2 } from "lucide-react"
+import { ArrowLeft, ArrowRight, Film as FilmIcon, Table2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect } from "react"
@@ -52,6 +52,7 @@ export default function Comparisons() {
     canUndo,
     recordMatch,
     undoLastMatch,
+    skipPair,
   } = useFilmRanking()
 
   const handleUndo = useCallback(() => {
@@ -66,7 +67,7 @@ export default function Comparisons() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Backspace" && canUndo) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "z" && canUndo) {
         e.preventDefault()
         handleUndo()
       }
@@ -110,23 +111,32 @@ export default function Comparisons() {
           <div className="text-xs text-gray-400">{completionPercentage}% to minimum</div>
         </div>
       </div>
-      <div className="flex min-h-0 flex-1 flex-col items-center justify-between px-4 pt-2 pb-4 md:mt-40 md:min-h-fit md:flex-none md:justify-center md:gap-20 md:px-0 md:pt-0 md:pb-0">
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-between px-4 pt-2 pb-4 md:mt-40 md:min-h-fit md:flex-none md:justify-center md:gap-12 md:px-0 md:pt-0 md:pb-0">
         <div className="flex min-h-0 w-full flex-1 flex-col items-center justify-center gap-3 md:w-auto md:flex-none md:flex-row md:items-center md:justify-center md:gap-12">
           <ComparisonOption film={filmA} onPick={() => handleChoice(filmA.id, filmB.id)} />
           <p className="hidden text-sm text-gray-400/50 md:block md:text-base">vs</p>
           <ComparisonOption film={filmB} onPick={() => handleChoice(filmB.id, filmA.id)} />
         </div>
-        <Link
-          href="/results"
-          className={`border-shadow text-secondary-foreground mt-3 flex shrink-0 items-center justify-center gap-2 rounded-4xl bg-[#FEFEFE] py-2 pr-3.5 pl-4 duration-50 md:mt-0 ${
-            completionPercentage >= 100
-              ? "cursor-pointer transition-all active:scale-97"
-              : "cursor-not-allowed opacity-50"
-          }`}
-          onClick={(e) => completionPercentage < 100 && e.preventDefault()}
-        >
-          Results <Table2 size={16} />
-        </Link>
+        <div className="mb-4 flex shrink-0 flex-col items-center gap-2 md:mb-0 md:gap-3">
+          <button
+            type="button"
+            onMouseDown={skipPair}
+            className="flex cursor-pointer items-center gap-1 text-sm font-medium text-gray-700 opacity-70 hover:opacity-100"
+          >
+            Skip <ArrowRight size={16} strokeWidth={2.5} />
+          </button>
+          <Link
+            href="/results"
+            className={`border-shadow text-secondary-foreground flex items-center justify-center gap-2 rounded-4xl bg-[#FEFEFE] py-2 pr-3.5 pl-4 duration-50 ${
+              completionPercentage >= 100
+                ? "cursor-pointer transition-all active:scale-97"
+                : "cursor-not-allowed opacity-50"
+            }`}
+            onClick={(e) => completionPercentage < 100 && e.preventDefault()}
+          >
+            Results <Table2 size={16} />
+          </Link>
+        </div>
       </div>
     </div>
   )
