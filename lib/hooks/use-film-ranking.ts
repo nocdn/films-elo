@@ -139,6 +139,54 @@ export function useFilmRanking() {
     return true
   }, [state, lastPair])
 
+  const importFromCsv = useCallback(
+    async (csvText: string) => {
+      const lines = csvText.trim().split("\n")
+      if (lines.length < 2) return // header + at least 1 film
+
+      const films: Film[] = lines.slice(1).map((line) => {
+        const lastComma = line.lastIndexOf(",")
+        const name = line.slice(0, lastComma).trim()
+        const elo = parseInt(line.slice(lastComma + 1).trim(), 10)
+        return {
+          id: `${name.toLowerCase().replace(/[^a-z0-9]/g, "-")}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          name,
+          elo: isNaN(elo) ? 1400 : elo,
+          comparisons: 0,
+        }
+      })
+
+      if (films.length < 2) return
+
+      const newState: FilmRankingState = {
+        films,
+        matchHistory: [],
+        totalComparisonsNeeded: films.length,
+        version: 1,
+      }
+
+      try {
+        const { enrichFilms } = await import("@/app/actions")
+        const posterData = await enrichFilms(films.map((f) => f.name))
+        newState.films = newState.films.map((film) => {
+          const data = posterData[film.name]
+          if (data) {
+            return { ...film, posterUrl: data.posterUrl, year: data.year }
+          }
+          return film
+        })
+      } catch (e) {
+        console.error("Failed to fetch posters:", e)
+      }
+
+      saveState(newState)
+      setState(newState)
+      setCurrentPair(null)
+      setLastPair(null)
+    },
+    []
+  )
+
   const reset = useCallback(() => {
     clearState()
     setState(null)
@@ -165,6 +213,7 @@ export function useFilmRanking() {
     startNewRanking,
     recordMatch,
     undoLastMatch,
+    importFromCsv,
     reset,
   }
 }

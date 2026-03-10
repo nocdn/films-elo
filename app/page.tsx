@@ -4,13 +4,7 @@ import { Popover } from "@base-ui-components/react/popover"
 import { ArrowRight, Download, Loader, Table2, Upload, X } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import {
-  useEffect,
-  useRef,
-  useState,
-  type ChangeEvent,
-  type MouseEvent as ReactMouseEvent,
-} from "react"
+import { useEffect, useRef, useState, type ChangeEvent } from "react"
 import { LetterboxdLogo } from "../lib/components/letterboxd-logo"
 import { useFilmRanking } from "../lib/hooks/use-film-ranking"
 
@@ -21,7 +15,7 @@ type ImportResponse = {
 
 export default function Home() {
   const router = useRouter()
-  const { state, isLoading, startNewRanking, reset } = useFilmRanking()
+  const { state, isLoading, startNewRanking, importFromCsv, reset } = useFilmRanking()
   const [filmInput, setFilmInput] = useState("")
   const [isStarting, setIsStarting] = useState(false)
   const [isImportOpen, setIsImportOpen] = useState(false)
@@ -29,6 +23,7 @@ export default function Home() {
   const [importError, setImportError] = useState<string | null>(null)
   const [importSummary, setImportSummary] = useState<string | null>(null)
   const importFileInputRef = useRef<HTMLInputElement>(null)
+  const resultsCsvInputRef = useRef<HTMLInputElement>(null)
   const importButtonRef = useRef<HTMLButtonElement>(null)
   const [showLetterboxdInstructions, setShowLetterboxdInstructions] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -71,9 +66,31 @@ export default function Home() {
     setShowLetterboxdInstructions(true)
   }
 
-  const handleImportToggle = (event: ReactMouseEvent<HTMLButtonElement>) => {
-    event.preventDefault()
+  const handleResultsCsvOptionClick = () => {
+    setIsImportOpen(false)
+    resultsCsvInputRef.current?.click()
+  }
 
+  const handleResultsCsvChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setIsImporting(true)
+    setImportError(null)
+    setImportSummary(null)
+    try {
+      const text = await file.text()
+      await importFromCsv(text)
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Could not import that file."
+      setImportError(message)
+    } finally {
+      setIsImporting(false)
+      event.target.value = ""
+    }
+  }
+
+  const handleImportToggle = () => {
     if (isStarting || isImporting) return
 
     setIsImportOpen((open) => !open)
@@ -127,7 +144,8 @@ export default function Home() {
   }
 
   const hasExistingSession = state && state.films.length > 0
-  const canShowResults = hasExistingSession && state.matchHistory.length > 0
+  const canShowResults =
+    hasExistingSession && (state.matchHistory.length > 0 || state.films.some((f) => f.elo !== 1400))
 
   return (
     <div className="flex h-svh min-h-0 flex-col gap-4 overflow-hidden px-1 pt-4 pb-2 md:mx-0 md:mt-40 md:h-auto md:overflow-visible md:px-0 md:pt-0 md:pb-0">
@@ -275,24 +293,38 @@ Or import a Letterboxd export file.`}
             </button>
             <Popover.Portal>
               <Popover.Positioner anchor={importButtonRef} align="end" sideOffset={8}>
-                <Popover.Popup className="border-shadow rounded-full bg-[#FEFEFE] p-1">
+                <Popover.Popup className="border-shadow rounded-xl bg-[#FEFEFE] p-1">
                   <button
                     type="button"
                     onClick={handleLetterboxdOptionClick}
-                    className="text-secondary-foreground flex cursor-pointer items-center gap-2 rounded-full px-3 py-1.5 text-sm hover:bg-black/5"
+                    className="text-secondary-foreground flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-sm hover:bg-black/5"
                   >
                     <LetterboxdLogo className="h-5 w-5 shrink-0" aria-hidden="true" />
                     Letterboxd
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleResultsCsvOptionClick}
+                    className="text-secondary-foreground flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-sm hover:bg-black/5"
+                  >
+                    Results CSV
                   </button>
                 </Popover.Popup>
               </Popover.Positioner>
             </Popover.Portal>
           </Popover.Root>
-          {hasExistingSession && (
-            <div className="flex flex-col justify-center text-xs leading-tight text-gray-500 md:hidden">
-              <span>{state.matchHistory.length} comparisons made</span>
-              <span>{state.films.length} films</span>
+          {isLoading ? (
+            <div className="flex items-center gap-2 text-xs text-gray-500 md:hidden">
+              <Loader size={12} className="animate-spin" />
+              Pulling saved progress
             </div>
+          ) : (
+            hasExistingSession && (
+              <div className="flex flex-col justify-center text-xs leading-tight text-gray-500 md:hidden">
+                <span>{state.matchHistory.length} comparisons made</span>
+                <span>{state.films.length} films</span>
+              </div>
+            )
           )}
         </div>
         <input
@@ -302,13 +334,27 @@ Or import a Letterboxd export file.`}
           className="hidden"
           onChange={handleImportFileChange}
         />
+        <input
+          ref={resultsCsvInputRef}
+          type="file"
+          accept=".csv,text/csv"
+          className="hidden"
+          onChange={handleResultsCsvChange}
+        />
       </div>
       {importError && <p className="text-sm text-red-500">{importError}</p>}
       {importSummary && <p className="ml-0.5 text-sm text-gray-500">{importSummary}</p>}
-      {hasExistingSession && (
-        <p className="hidden text-sm text-gray-500 md:block">
-          {state.matchHistory.length} comparisons made • {state.films.length} films
+      {isLoading ? (
+        <p className="hidden items-center gap-2 text-sm text-gray-500 md:flex">
+          <Loader size={14} className="animate-spin" />
+          Pulling saved progress
         </p>
+      ) : (
+        hasExistingSession && (
+          <p className="hidden text-sm text-gray-500 md:block">
+            {state.matchHistory.length} comparisons made • {state.films.length} films
+          </p>
+        )
       )}
     </div>
   )

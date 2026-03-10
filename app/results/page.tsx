@@ -1,22 +1,63 @@
 "use client"
 
 import { Popover } from "@base-ui-components/react/popover"
-import { ArrowLeft, Film as FilmIcon } from "lucide-react"
+import { ArrowLeft, Film as FilmIcon, Loader } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useFilmRanking } from "../../lib/hooks/use-film-ranking"
 
 export default function Results() {
   const router = useRouter()
-  const { state, isLoading, sortedFilms, completionPercentage, totalMatches } = useFilmRanking()
+  const { state, isLoading, sortedFilms, completionPercentage, totalMatches, importFromCsv } =
+    useFilmRanking()
   const [copied, setCopied] = useState(false)
+  const [isExportOpen, setIsExportOpen] = useState(false)
+  const [isExportHover, setIsExportHover] = useState(false)
+  const [isImporting, setIsImporting] = useState(false)
+  const importFileInputRef = useRef<HTMLInputElement>(null)
+  const exportButtonRef = useRef<HTMLButtonElement>(null)
 
-  const handleExport = async () => {
+  const handleExportToggle = () => {
+    setIsExportOpen((open) => !open)
+  }
+
+  const handleCopyPlainText = async () => {
     const text = sortedFilms.map((film) => film.name).join("\n")
     await navigator.clipboard.writeText(text)
+    setIsExportOpen(false)
     setCopied(true)
     setTimeout(() => setCopied(false), 1500)
+  }
+
+  const handleDownloadCsv = () => {
+    const header = "title,elo"
+    const rows = sortedFilms.map((film) => `${film.name},${film.elo}`)
+    const csv = [header, ...rows].join("\n")
+    const blob = new Blob([csv], { type: "text/csv" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = "film-rankings.csv"
+    a.click()
+    URL.revokeObjectURL(url)
+    setIsExportOpen(false)
+  }
+
+  const handleImportFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setIsImporting(true)
+    try {
+      const text = await file.text()
+      await importFromCsv(text)
+    } catch (e) {
+      console.error("Failed to import CSV:", e)
+    } finally {
+      setIsImporting(false)
+      event.target.value = ""
+    }
   }
 
   useEffect(() => {
@@ -40,24 +81,94 @@ export default function Results() {
       <Link href="/" prefetch={true} className="absolute top-4 left-4 flex items-center gap-2">
         <ArrowLeft className="h-4 w-4" /> Back
       </Link>
-      <Popover.Root>
-        <Popover.Trigger
-          openOnHover
-          delay={0}
-          closeDelay={0}
-          onClick={handleExport}
-          className="absolute top-4 right-5.5 flex cursor-pointer items-center gap-2"
+      <div className="absolute top-4 right-5.5 flex items-center gap-4">
+        <Popover.Root>
+          <Popover.Trigger
+            openOnHover
+            delay={0}
+            closeDelay={0}
+            render={
+              <button
+                type="button"
+                onClick={() => importFileInputRef.current?.click()}
+                disabled={isImporting}
+                className="flex cursor-pointer items-center gap-1.5 disabled:cursor-not-allowed disabled:opacity-50"
+              />
+            }
+          >
+            {isImporting ? (
+              <>
+                Importing <Loader size={14} className="animate-spin" />
+              </>
+            ) : (
+              <>Import</>
+            )}
+          </Popover.Trigger>
+          <Popover.Portal>
+            <Popover.Positioner align="end" sideOffset={8}>
+              <Popover.Popup className="border-shadow rounded-xl bg-[#FEFEFE] px-3 py-2 text-sm text-gray-600">
+                Import a results CSV file
+              </Popover.Popup>
+            </Popover.Positioner>
+          </Popover.Portal>
+        </Popover.Root>
+        <input
+          ref={importFileInputRef}
+          type="file"
+          accept=".csv,text/csv"
+          className="hidden"
+          onChange={handleImportFile}
+        />
+        <Popover.Root
+          open={isExportHover && !isExportOpen}
+          onOpenChange={setIsExportHover}
         >
-          {copied ? "Copied" : "Export"}
-        </Popover.Trigger>
-        <Popover.Portal>
-          <Popover.Positioner align="end" sideOffset={8}>
-            <Popover.Popup className="border-shadow rounded-xl bg-[#FEFEFE] px-3 py-2 text-sm text-gray-600">
-              Copies as a txt list <br /> separated by new lines
-            </Popover.Popup>
-          </Popover.Positioner>
-        </Popover.Portal>
-      </Popover.Root>
+          <Popover.Trigger
+            openOnHover
+            delay={0}
+            closeDelay={0}
+            render={
+              <button
+                type="button"
+                ref={exportButtonRef}
+                onClick={handleExportToggle}
+                className="flex cursor-pointer items-center gap-1.5"
+              />
+            }
+          >
+            {copied ? "Copied" : "Export"}
+          </Popover.Trigger>
+          <Popover.Portal>
+            <Popover.Positioner align="end" sideOffset={8}>
+              <Popover.Popup className="border-shadow rounded-xl bg-[#FEFEFE] px-3 py-2 text-sm text-gray-600">
+                Copy or download your results
+              </Popover.Popup>
+            </Popover.Positioner>
+          </Popover.Portal>
+        </Popover.Root>
+        <Popover.Root open={isExportOpen} onOpenChange={setIsExportOpen}>
+          <Popover.Portal>
+            <Popover.Positioner anchor={exportButtonRef} align="end" sideOffset={8}>
+              <Popover.Popup className="border-shadow rounded-xl bg-[#FEFEFE] p-1">
+                <button
+                  type="button"
+                  onClick={handleCopyPlainText}
+                  className="text-secondary-foreground flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-sm hover:bg-black/5"
+                >
+                  Plain text
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDownloadCsv}
+                  className="text-secondary-foreground flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-sm hover:bg-black/5"
+                >
+                  CSV file
+                </button>
+              </Popover.Popup>
+            </Popover.Positioner>
+          </Popover.Portal>
+        </Popover.Root>
+      </div>
       <div className="font-ioskeley-mono mt-20 flex w-3xl flex-col gap-4 border border-dashed border-gray-300 pt-4">
         <div className="font-inter flex items-center justify-between px-4 pb-2 text-sm text-gray-500">
           <span>{totalMatches} comparisons</span>
@@ -93,7 +204,7 @@ export default function Results() {
       <div className="mt-4 flex w-full justify-around gap-2">
         <Link
           href="/comparisons"
-          className="border-shadow flex cursor-pointer items-center justify-center gap-2 rounded-4xl bg-[#202020] px-5 py-2 text-white transition-all duration-50 active:scale-97"
+          className="border-shadow mt-4 flex cursor-pointer items-center justify-center gap-2 rounded-4xl bg-[#202020] px-5 py-2 text-white transition-all duration-50 active:scale-97"
         >
           Continue Comparing
         </Link>
