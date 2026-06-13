@@ -11,6 +11,12 @@ You can first add films (or import them from Letterboxd) and then compare them t
 - IMDB (coming soon)
 - Trakt (coming soon)
 
+#### Environment Variables:
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `TMDB_API_KEY` | Yes | TMDB API key used for fetching film posters. Get one from your TMDB account API settings. |
+
 #### Deploying:
 
 This is a Next.js app so deploy it however you like.
