@@ -352,7 +352,7 @@ Or import a Letterboxd export file.`}
       ) : (
         hasExistingSession && (
           <p className="hidden text-sm text-gray-500 md:block">
-            {state.matchHistory.length} comparisons made • {state.films.length} films
+            {state.matchHistory.length} comparisons made · {state.films.length} films
           </p>
         )
       )}

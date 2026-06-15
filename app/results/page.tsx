@@ -169,7 +169,7 @@ export default function Results() {
           </Popover.Portal>
         </Popover.Root>
       </div>
-      <div className="font-ioskeley-mono mt-20 flex w-3xl flex-col gap-4 border border-dashed border-gray-300 pt-4">
+      <div className="font-ioskeley-mono mt-20 flex w-3xl flex-col gap-4 border border-dashed border-gray-300 pt-4 rounded-xl px-2">
         <div className="font-inter flex items-center justify-between px-4 pb-2 text-sm text-gray-500">
           <span>{totalMatches} comparisons</span>
           <span>{completionPercentage}% complete</span>
@@ -192,9 +192,9 @@ export default function Results() {
             )}
             <div className="flex flex-col">
               <h2 className="font-inter">{film.name}</h2>
-              <p className="text-sm text-gray-500">
+              <p className="text-[13px] text-gray-500">
                 {film.year || "Unknown year"}{" "}
-                <span className="text-[11px] text-gray-400/40">•</span> {film.comparisons} matches
+                <span className="text-[12px] text-gray-400/40">·</span> {film.comparisons} matches
               </p>
             </div>
             <p className="ml-auto text-sm text-gray-500">{film.elo}</p>
