@@ -179,7 +179,7 @@ export default function Results() {
             key={film.id}
             className="flex min-w-0 items-center gap-2 border-b border-dashed border-gray-300 px-2 pb-4 tabular-nums last:border-b-0 sm:gap-4 sm:px-4"
           >
-            <div className="shrink-0 text-[15px] text-gray-400 tabular-nums">
+            <div className="mr-2 shrink-0 text-[15px] text-gray-400 tabular-nums sm:mr-3">
               <span className="mr-0.5">#</span>
               {String(index + 1).padStart(rankDigits, "0")}
             </div>
