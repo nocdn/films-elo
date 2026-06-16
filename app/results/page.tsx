@@ -77,11 +77,11 @@ export default function Results() {
   const rankDigits = String(sortedFilms.length).length
 
   return (
-    <div className="pb-10">
+    <div className="relative w-full max-w-3xl px-4 pb-10">
       <Link href="/" prefetch={true} className="absolute top-4 left-4 flex items-center gap-2">
         <ArrowLeft className="h-4 w-4" /> Back
       </Link>
-      <div className="absolute top-4 right-5.5 flex items-center gap-4">
+      <div className="absolute top-4 right-4 flex items-center gap-4">
         <Popover.Root>
           <Popover.Trigger
             openOnHover
@@ -169,39 +169,43 @@ export default function Results() {
           </Popover.Portal>
         </Popover.Root>
       </div>
-      <div className="font-ioskeley-mono mt-20 flex w-3xl flex-col gap-4 border border-dashed border-gray-300 pt-4 rounded-xl px-2">
-        <div className="font-inter flex items-center justify-between px-4 pb-2 text-sm text-gray-500">
+      <div className="font-ioskeley-mono mt-20 flex w-full flex-col gap-4 rounded-xl border border-dashed border-gray-300 px-2 pt-4">
+        <div className="font-inter flex items-center justify-between px-2 pb-2 text-sm text-gray-500 sm:px-4">
           <span>{totalMatches} comparisons</span>
           <span>{completionPercentage}% complete</span>
         </div>
         {sortedFilms.map((film, index) => (
           <div
             key={film.id}
-            className="flex items-center gap-4 border-b border-dashed border-gray-300 px-4 pb-4 tabular-nums last:border-b-0"
+            className="flex min-w-0 items-center gap-2 border-b border-dashed border-gray-300 px-2 pb-4 tabular-nums last:border-b-0 sm:gap-4 sm:px-4"
           >
-            <div className="mr-4 text-[15px] text-gray-400 tabular-nums">
+            <div className="shrink-0 text-[15px] text-gray-400 tabular-nums">
               <span className="mr-0.5">#</span>
               {String(index + 1).padStart(rankDigits, "0")}
             </div>
             {film.posterUrl ? (
-              <img src={film.posterUrl} alt={film.name} className="h-14 rounded" />
+              <img
+                src={film.posterUrl}
+                alt={film.name}
+                className="hidden h-14 shrink-0 rounded sm:block"
+              />
             ) : (
-              <div className="flex h-14 w-9 items-center justify-center rounded bg-gray-100">
+              <div className="hidden h-14 w-9 shrink-0 items-center justify-center rounded bg-gray-100 sm:flex">
                 <FilmIcon className="h-5 w-5 text-gray-300" />
               </div>
             )}
-            <div className="flex flex-col">
-              <h2 className="font-inter">{film.name}</h2>
-              <p className="text-[13px] text-gray-500">
+            <div className="min-w-0 flex-1">
+              <h2 className="font-inter truncate">{film.name}</h2>
+              <p className="truncate text-[13px] text-gray-500">
                 {film.year || "Unknown year"}{" "}
                 <span className="text-[12px] text-gray-400/40">·</span> {film.comparisons} matches
               </p>
             </div>
-            <p className="ml-auto text-sm text-gray-500">{film.elo}</p>
+            <p className="shrink-0 text-sm text-gray-500">{film.elo}</p>
           </div>
         ))}
       </div>
-      <div className="mt-4 flex w-full justify-around gap-2">
+      <div className="mt-4 flex w-full justify-center gap-2">
         <Link
           href="/comparisons"
           className="border-shadow mt-4 flex cursor-pointer items-center justify-center gap-2 rounded-4xl bg-[#202020] px-5 py-2 text-white transition-all duration-50 active:scale-97"
